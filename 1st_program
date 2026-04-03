@@ -1,0 +1,8 @@
+#include <iostream>
+
+int main(){
+    int favorite_number;
+    std::cout<< "enter your faivorate number";
+    std::cin>>favorite_number;
+    return 0;
+}
