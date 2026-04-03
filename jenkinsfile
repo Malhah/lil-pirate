@@ -13,6 +13,19 @@ pipeline {
             }
         }
 
+        stage('Verify Sources') {
+            steps {
+                bat '''
+                if not exist src (
+                    echo src folder not found
+                    exit /b 1
+                )
+
+                dir /s /b src\\*.java
+                '''
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build --no-cache -t %IMAGE_NAME% .'
@@ -28,7 +41,7 @@ pipeline {
             }
         }
 
-        stage('Run Build Container') {
+        stage('Run Container') {
             steps {
                 bat 'docker run --name %CONTAINER_NAME% %IMAGE_NAME%'
             }
@@ -43,16 +56,19 @@ pipeline {
 
     post {
         success {
-            echo 'Jenkins pipeline completed successfully.'
+            echo 'Pipeline completed successfully.'
         }
+
         failure {
-            echo 'Jenkins pipeline failed.'
+            echo 'Pipeline failed.'
         }
+
         always {
             bat '''
             docker rm -f %CONTAINER_NAME% 2>nul
             exit /b 0
             '''
+            cleanWs()
         }
     }
 }
