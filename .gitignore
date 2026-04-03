@@ -1,5 +1,6 @@
 .metadata
 bin/
+out/
 tmp/
 *.tmp
 *.bak
@@ -11,4 +12,7 @@ local.properties
 .recommenders
 .project
 .classpath
-/bin/
+
+.vscode/
+*.class
+sources.txt
