@@ -1,0 +1,43 @@
+🏴‍☠️ Lil Pirate: Java Game + DevOps Pipeline
+Hey! This is a 2D Java game I built a while back that I've recently been using as a guinea pig for some CI/CD practice. While coding the game in Java was fun, the real challenge was building a proper DevOps pipeline to automate everything outside of a standard IDE.
+
+🎮 What’s Under the Hood?
+Instead of just hitting "Run" in VS Code and calling it a day, I focused on making the project "production-ready":
+
+Clean Code Structure: Kept things modular with different packages for game logic, UI, and rendering.
+
+Handling Assets: Figured out the right way to bundle and load sprites, audio files, and fonts so they don't break when exported.
+
+Portability: Made sure the game runs as a standalone app, regardless of the local dev environment.
+
+⚙️ The DevOps Side
+The main goal here was to get comfortable with automation and containerization. Here’s the breakdown of the stack:
+
+🔹 Version Control (Git & GitHub)
+I’m keeping the code on GitHub and following a clean workflow. I actually ran into a weird nested repository issue where a hidden .git folder ended up inside my /src directory—that was a mess to clean up, but it taught me a lot about how Git tracks (or fails to track) submodules and folders.
+
+🔹 Continuous Integration (Jenkins)
+I set up a Jenkins pipeline to handle the heavy lifting. Every time I push code, Jenkins:
+
+Grabs the latest version from GitHub.
+
+Sanity Checks the file structure to make sure nothing important is missing.
+
+Builds the Docker image from scratch.
+
+Verifies the build by running the container and checking the logs for errors.
+
+🔹 Containerization (Docker)
+Dockerizing a GUI-based Java app is surprisingly tricky. It’s not just a web server; I had to deal with:
+
+Headless Environments: Figuring out how Java's AWT/Swing behaves when there’s no physical screen attached (crucial for CI servers).
+
+The Audio Headache: Containers don't have "ears," so I had to handle how the app reacts when it can't find a sound card.
+
+Compiling on the Fly: Making sure the Dockerfile correctly handles multi-package compilation without leaving a massive image size.
+
+🐳 Getting Started
+If you want to build the image yourself, it's pretty straightforward:
+
+Bash
+docker build -t lil-pirate .
