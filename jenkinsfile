@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'lil-pirate'
+        CONTAINER_NAME = 'lil-pirate-build'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build --no-cache -t %IMAGE_NAME% .'
+            }
+        }
+
+        stage('Remove Old Container') {
+            steps {
+                bat '''
+                docker rm -f %CONTAINER_NAME% 2>nul
+                exit /b 0
+                '''
+            }
+        }
+
+        stage('Run Build Container') {
+            steps {
+                bat 'docker run --name %CONTAINER_NAME% %IMAGE_NAME%'
+            }
+        }
+
+        stage('Show Container Logs') {
+            steps {
+                bat 'docker logs %CONTAINER_NAME%'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Jenkins pipeline completed successfully.'
+        }
+        failure {
+            echo 'Jenkins pipeline failed.'
+        }
+        always {
+            bat '''
+            docker rm -f %CONTAINER_NAME% 2>nul
+            exit /b 0
+            '''
+        }
+    }
+}
